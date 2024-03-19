@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'bmi_info_screen.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -11,18 +15,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class BMICalculator extends StatefulWidget {
-  @override
-  _BMICalculatorState createState() => _BMICalculatorState();
-}
-
-class _BMICalculatorState extends State<BMICalculator> {
+class BMICalculator extends StatelessWidget {
   // Controllers for text fields to get inputs
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
 
   // Variable for storing the calculated BMI result
-  String bmiResult = '';
+  final RxString bmiResult = ''.obs;
 
   // Function to calculate BMI using given inputs
   void calculateBMI() {
@@ -33,23 +32,16 @@ class _BMICalculatorState extends State<BMICalculator> {
     if (height != 0.0 && weight != 0.0) {
       // BMI calculation formula
       double bmi = weight / ((height / 100) * (height / 100));
-      setState(() {
-        bmiResult = bmi.toStringAsFixed(2);
-      });
+      bmiResult.value = bmi.toStringAsFixed(2);
     }
   }
 
   // Function to navigate to BMIInfoScreen
   void navigateToBMIInfoScreen() {
-    double? bmiValue = double.tryParse(bmiResult);
+    double? bmiValue = double.tryParse(bmiResult.value);
     // Check if BMI value is valid
     if (bmiValue != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BMIInfoScreen(bmiValue),
-        ),
-      );
+      Get.to(() => BMIInfoScreen(bmiValue));
     } else {
       print('Invalid BMI value.');
     }
@@ -157,10 +149,10 @@ class _BMICalculatorState extends State<BMICalculator> {
               'Your BMI :',
               style: TextStyle(fontSize: 18),
             ),
-            Text(
-              bmiResult, // Display calculated BMI result
-              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-            ),
+            Obx(() => Text(
+                  bmiResult.value, // Display calculated BMI result
+                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                )),
             SizedBox(height: 22),
             ElevatedButton(
               onPressed:

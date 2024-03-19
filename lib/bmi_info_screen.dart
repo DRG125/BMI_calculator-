@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BMIInfoScreen extends StatelessWidget {
-  final double bmiResult;
-
-  BMIInfoScreen(this.bmiResult); // Constructor to initialize
+  // Constructor to initialize
+  BMIInfoScreen(double bmiValue);
 
   // Function to determine the category using BMI value
   String getCategory(double bmi) {
@@ -26,9 +26,11 @@ class BMIInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double bmiResult =
+        Get.arguments ?? 0.0; // Retrieve BMI value from previous screen
     String category = getCategory(bmiResult); // Determine BMI category
 
-    //List of maps for Nutritional information
+    // List of maps for Nutritional information
     List<Map<String, String>> nutritionTable = [
       {
         "BMI Range": "<16 (kg/m2)",
